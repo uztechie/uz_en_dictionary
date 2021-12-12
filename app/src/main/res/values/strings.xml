@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Uz En Dictionary</string>
+    <string name="search">Search</string>
+    <string name="favorite">Favorite</string>
+    <string name="about">About</string>
+    <string name="uzbek">Uzbek</string>
+    <string name="english">English</string>
+    <string name="not_found">No data found</string>
+    <string name="example">Example</string>
+    <string name="do_you_want_to_delete_favorite">Are you sure? do you want to delete this favorite word?</string>
+    <string name="author">Author</string>
+    <string name="developer">Developer</string>
+    <string name="developer_name">Ibroxim Odilov</string>
+    <string name="developer_phone">+998999952666</string>
+    <string name="developer_email">ibroximbox@gmail.com</string>
+    <string name="email_is_copied">Email is copied</string>
+    <string name="info">Info</string>
+</resources>

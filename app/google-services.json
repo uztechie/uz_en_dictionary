@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "922936159219",
+    "project_id": "uz-en-dictionary",
+    "storage_bucket": "uz-en-dictionary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922936159219:android:09c74f781be8797c3f8086",
+        "android_client_info": {
+          "package_name": "uz.techie.uzendictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922936159219-prc5jaujpaas05nfbivines9fkhplu8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdoNw5D4ztjuw6bcZCdjbbJum7_FujJq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922936159219-prc5jaujpaas05nfbivines9fkhplu8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922936159219:android:64bfe336e79bf44f3f8086",
+        "android_client_info": {
+          "package_name": "uz.techie.uzendictionaryadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922936159219-prc5jaujpaas05nfbivines9fkhplu8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdoNw5D4ztjuw6bcZCdjbbJum7_FujJq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922936159219-prc5jaujpaas05nfbivines9fkhplu8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
