@@ -1,5 +1,9 @@
 package uz.techie.uzendictionary.fragments
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
@@ -54,7 +58,9 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
 
         details_word_en_tts.setOnClickListener {
             word!!.word_en?.let {
-                val text = it.replace("/", ",")
+                var text = it.replace("/", ",")
+                text = text.replace("=", " ")
+                tts?.setSpeechRate(0.7f)
                 tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
             }
 
@@ -63,7 +69,9 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
 
         details_example_tts.setOnClickListener {
             word!!.example?.let {
-                val text = it.replace("/", ",")
+                var text = it.replace("/", ",")
+                text = text.replace("=", " ")
+                tts?.setSpeechRate(0.7f)
                 tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
             }
 
@@ -93,8 +101,37 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
             }
         }
 
+        details_btn_copy.setOnClickListener {
+            word?.let { it1 -> copyWord(it1) }
+        }
+        details_btn_share.setOnClickListener {
+            word?.let {it1-> shareSentence(it1) }
+        }
+
 
     }
+
+    private fun copyWord(favorite: Word){
+        val content = "Uzbek: ${favorite.word_uz} \nEnglish: ${favorite.word_en} \nExample: ${favorite.example}"
+
+        val clipboardManager =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("sentence", content)
+        clipboardManager.setPrimaryClip(clipData)
+
+        Utils.showMessage(requireContext(), getString(R.string.word_copied))
+    }
+
+    private fun shareSentence(favorite: Word){
+        val content = "Uzbek: ${favorite.word_uz} \nEnglish: ${favorite.word_en} \nExample: ${favorite.example}"
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Sharing sentence")
+        intent.putExtra(Intent.EXTRA_TEXT, content)
+        startActivity(Intent.createChooser(intent, "Share sentence"))
+    }
+
+
 
     private fun checkFavorite() {
         word?.let {

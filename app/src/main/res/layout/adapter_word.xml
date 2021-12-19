@@ -8,10 +8,10 @@
     android:layout_margin="4dp">
 
     <TextView
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/glass"
         android:padding="12dp"
         android:textStyle="bold"
-        android:textColor="@color/colorOnPrimary"
+        android:textColor="@color/colorOnGlass"
         android:textSize="16sp"
         android:id="@+id/adapter_title"
         android:layout_width="match_parent"

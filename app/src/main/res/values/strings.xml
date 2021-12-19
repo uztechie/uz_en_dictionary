@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Uz En Dictionary</string>
+        <string name="app_name">Uz-En Collocations Dictionary</string>
     <string name="search">Search</string>
     <string name="favorite">Favorite</string>
     <string name="about">About</string>
@@ -15,4 +15,7 @@
     <string name="developer_email">ibroximbox@gmail.com</string>
     <string name="email_is_copied">Email is copied</string>
     <string name="info">Info</string>
+    <string name="word_copied">Sentence copied</string>
+    <string name="theme">Theme</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>

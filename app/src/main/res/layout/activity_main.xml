@@ -17,14 +17,14 @@
         app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        app:itemIconTint="@color/bottom_menu_color"
-        app:itemTextColor="@color/bottom_menu_color"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:itemRippleColor="@color/colorPrimary"
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/colorPrimary"
+        app:itemIconTint="@color/bottom_menu_color"
+        app:itemRippleColor="@color/colorPrimaryLight"
+        app:itemTextColor="@color/bottom_menu_color"
         app:menu="@menu/bottom_menu" />
 
 </RelativeLayout>

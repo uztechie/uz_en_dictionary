@@ -16,7 +16,7 @@ android {
         minSdk 21
         targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName '1.0.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -106,6 +106,8 @@ dependencies {
     //crash reporter
     implementation 'com.balsikandar.android:crashreporter:1.1.0'
 
+    //switch dark/light mode
+    implementation 'com.github.vimalcvs:Day-Night-Switch:1.0.3'
 
 }
 

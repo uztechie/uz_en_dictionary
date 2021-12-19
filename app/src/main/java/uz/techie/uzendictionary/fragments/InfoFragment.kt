@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
@@ -21,6 +23,7 @@ import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.R
 import uz.techie.uzendictionary.dialog.CustomProgressbar
 import uz.techie.uzendictionary.models.User
+import uz.techie.uzendictionary.utils.SharedData
 import uz.techie.uzendictionary.utils.Utils
 import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 
@@ -36,6 +39,10 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
         customProgressbar.show()
         initToolbar()
 
+
+
+
+
         viewLifecycleOwner.lifecycle.coroutineScope.launch {
             viewModel.getUser().collect {
                 loadUser()
@@ -49,6 +56,20 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
             }
         }
 
+        info_switch.setIsNight(SharedData(requireContext()).isDarkMode())
+
+        info_switch.setListener {
+            if (info_switch.isNight) {
+                changeMode(true)
+                SharedData(requireContext()).setAppMode(true)
+            } else {
+                SharedData(requireContext()).setAppMode(false)
+                changeMode(false)
+            }
+
+            Log.d("d", "onViewCreated: switch " + it)
+            Log.d("TAG", "onViewCreated: isNight " + info_switch.isNight)
+        }
 
 
 
@@ -124,6 +145,14 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
         toolbar_title.text = getString(R.string.info)
         toolbar_btn_back.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    fun changeMode(isDarkMode: Boolean) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 

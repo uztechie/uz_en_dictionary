@@ -9,7 +9,7 @@
     android:layout_margin="4dp">
 
     <RelativeLayout
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/glass"
         android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -17,21 +17,22 @@
             android:layout_marginEnd="8dp"
             android:layout_toLeftOf="@id/adapter_favorite_delete"
             android:textStyle="bold"
-            android:textColor="@color/colorOnPrimary"
+            android:textColor="@color/colorOnGlass"
             android:textSize="16sp"
             android:id="@+id/adapter_favorite_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/adapter_favorite_delete"
-            android:padding="4dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            app:tint="@color/colorOnPrimary"
-            android:src="@drawable/ic_baseline_close_24"
             android:layout_width="24dp"
-            android:layout_height="24dp"/>
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="4dp"
+            android:src="@drawable/ic_baseline_close_24"
+            app:tint="@color/colorOnGlass" />
     </RelativeLayout>
 
 

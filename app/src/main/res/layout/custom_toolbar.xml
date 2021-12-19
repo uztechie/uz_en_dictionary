@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:background="@color/colorPrimary"
+<RelativeLayout android:background="@color/colorPrimary"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:paddingHorizontal="10dp">
+    android:paddingHorizontal="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <ImageView
@@ -13,13 +13,15 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_centerVertical="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="2dp"
+        app:tint="@color/colorOnPrimary"
         android:src="@drawable/ic_baseline_arrow_back_24" />
 
     <TextView
         android:textStyle="bold"
         android:textSize="18sp"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorOnPrimary"
         android:id="@+id/toolbar_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

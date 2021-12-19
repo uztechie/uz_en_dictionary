@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -21,19 +21,20 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/uzbek"
-            android:textColor="@color/colorOnPrimary"
+            android:textColor="@color/colorOnBackground"
             android:textSize="16sp"
             android:textStyle="bold" />
 
 
         <ImageView
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/search_changer_iv"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="16dp"
             android:padding="4dp"
             android:src="@drawable/ic_baseline_change_circle_24"
-            app:tint="@color/colorOnPrimary" />
+            app:tint="@color/colorOnBackground" />
 
         <TextView
             android:id="@+id/search_lang2"
@@ -42,7 +43,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/english"
-            android:textColor="@color/colorOnPrimary"
+            android:textColor="@color/colorOnBackground"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -69,6 +70,7 @@
             android:padding="12dp"
             android:textColor="@color/colorOnPrimary"
             android:textColorHint="@color/lightGray"
+            android:textCursorDrawable="@null"
             android:textSize="16sp" />
 
         <ImageView
