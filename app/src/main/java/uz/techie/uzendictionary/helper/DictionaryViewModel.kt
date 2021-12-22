@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.models.Favorite
 import uz.techie.uzendictionary.models.User
+import uz.techie.uzendictionary.models.Version
 import uz.techie.uzendictionary.models.Word
 import javax.inject.Inject
 
@@ -44,5 +45,12 @@ class DictionaryViewModel
         repository.insertUser(user)
     }
     fun getUser() = repository.getUser()
+
+    //version
+
+    fun insertVersion(version: Version) = viewModelScope.launch {
+        repository.insertVersion(version)
+    }
+    fun getVersion() = repository.getVersion()
 
 }

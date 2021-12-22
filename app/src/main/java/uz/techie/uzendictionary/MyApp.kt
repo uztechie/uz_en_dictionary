@@ -1,6 +1,7 @@
 package uz.techie.uzendictionary
 
 import android.app.Application
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import dagger.hilt.android.HiltAndroidApp
 import uz.techie.uzendictionary.utils.SharedData
@@ -12,6 +13,7 @@ class MyApp:Application() {
         super.onCreate()
 
         changeMode(SharedData(this).isDarkMode())
+        Log.d("TAG", "onCreate: mode is dark "+SharedData(this).isDarkMode())
     }
 
     fun changeMode(isDarkMode: Boolean) {

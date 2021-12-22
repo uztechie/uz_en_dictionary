@@ -3,6 +3,7 @@ package uz.techie.uzendictionaryadmin.data
 import dagger.hilt.android.AndroidEntryPoint
 import uz.techie.uzendictionary.models.Favorite
 import uz.techie.uzendictionary.models.User
+import uz.techie.uzendictionary.models.Version
 import uz.techie.uzendictionary.models.Word
 import uz.techie.uzendictionaryadmin.db.DictionaryDatabase
 import javax.inject.Inject
@@ -27,7 +28,12 @@ class DictionaryRepository @Inject constructor(private val db:DictionaryDatabase
     fun getAllFavoritesUz() = dao.getAllFavoritesUz()
 
     //user
-    suspend fun insertUser(user: User) = dao.deleteInsertUser(user)
+    suspend fun insertUser(user: User) = dao.insertUser(user)
     fun getUser() = dao.getUser()
+
+    //version
+
+    suspend fun insertVersion(version: Version) = dao.insertVersion(version)
+    fun getVersion() = dao.getVersion()
 
 }

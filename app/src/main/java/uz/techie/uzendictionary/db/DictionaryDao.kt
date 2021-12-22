@@ -5,6 +5,7 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import uz.techie.uzendictionary.models.Favorite
 import uz.techie.uzendictionary.models.User
+import uz.techie.uzendictionary.models.Version
 import uz.techie.uzendictionary.models.Word
 
 @Dao
@@ -33,7 +34,6 @@ interface DictionaryDao {
     fun getAllWords():LiveData<List<Word>>
 
     //favorite
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavorite(favorite: Favorite)
 
@@ -51,7 +51,7 @@ interface DictionaryDao {
 
 
     //user
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user:User)
 
     @Query("delete from user")
@@ -63,8 +63,16 @@ interface DictionaryDao {
         insertUser(user)
     }
 
-    @Query("select * from user limit 1")
+    @Query("select * from user")
     fun getUser():Flow<List<User>>
+
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertVersion(version: Version)
+
+    @Query("select * from version order by version desc limit 1")
+    fun getVersion():List<Version>
 
 
 }

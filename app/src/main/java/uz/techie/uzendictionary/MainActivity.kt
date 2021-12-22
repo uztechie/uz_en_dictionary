@@ -1,16 +1,29 @@
 package uz.techie.uzendictionary
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +31,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.dialog.CustomProgressbar
+import uz.techie.uzendictionary.dialog.InternetDialog
+import uz.techie.uzendictionary.models.User
+import uz.techie.uzendictionary.models.Version
 import uz.techie.uzendictionary.models.Word
 import uz.techie.uzendictionary.utils.Utils
 import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
@@ -25,6 +41,10 @@ import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val db = Firebase.firestore
+    lateinit var database:DatabaseReference
+    private var listener:ValueEventListener? = null
+    private var ref:DatabaseReference? = null
+
     private val viewModel: DictionaryViewModel by viewModels()
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -35,13 +55,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         customProgressbar = CustomProgressbar(this)
+        database = Firebase.database.reference
 
-        loadData()
+        checkVersionAndLoad()
+
+//        loadData()
+//        loadUserData()
 
         lifecycle.coroutineScope.launch {
             viewModel.searchWordUz("%%").collect {
                 if (it.isNotEmpty()){
                     customProgressbar.dismiss()
+                }
+                else if (it.isEmpty() && !isNetworkAvailable()){
+                    val internetDialog = InternetDialog(this@MainActivity)
+                    internetDialog.show()
                 }
             }
         }
@@ -53,9 +81,9 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
 
 
-
         bottomNavigationView = findViewById(R.id.bottom_nav_view)
         bottomNavigationView.setupWithNavController(navController)
+
 
 
 
@@ -65,18 +93,154 @@ class MainActivity : AppCompatActivity() {
     private fun loadData() {
         customProgressbar.show()
         val list = mutableListOf<Word>()
-        db.collection("words").get().addOnSuccessListener { snapshot->
-            customProgressbar.dismiss()
-            snapshot.forEach { childSnapshot->
-                val word = childSnapshot.toObject(Word::class.java)
-                list.add(word)
+        listener = object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                list.clear()
+                customProgressbar.dismiss()
+                snapshot.children.forEach { childSnapshot->
+                    val word = childSnapshot.getValue(Word::class.java)
+                    if (word != null) {
+                        list.add(word)
+                    }
+                }
+                Log.d("TAG", "onDataChange: list size "+list.size)
+                viewModel.insertAndDeleteWords(list)
+                ref?.removeEventListener(this)
+
             }
-            viewModel.insertAndDeleteWords(list)
-        }.addOnFailureListener {
-            customProgressbar.dismiss()
-            Utils.showMessage(this, it.toString())
+
+            override fun onCancelled(error: DatabaseError) {
+                customProgressbar.dismiss()
+                Utils.showMessage(this@MainActivity, error.message)
+                ref?.removeEventListener(this)
+            }
+
         }
+        ref = database.child("words")
+        ref?.addValueEventListener(listener!!)
 
     }
+
+    private fun loadUserData1(){
+        val ref = Firebase.database.reference.child("users").child("user1")
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("TAG", "onDataChange: userdata ")
+                if (snapshot.exists()){
+                    val user = User(1)
+                    user.full_name = snapshot.child("name").value.toString()
+                    user.email = snapshot.child("email").value.toString()
+                    user.phone = snapshot.child("phone").value.toString()
+                    viewModel.insertUser(user)
+
+                    ref.removeEventListener(this)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("TAG", "onCancelled:userdata ", error.toException())
+                ref.removeEventListener(this)
+            }
+
+        })
+
+    }
+
+    private fun loadUserData2(){
+        val ref = Firebase.database.reference.child("users").child("developer")
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("TAG", "onDataChange: userdata ")
+                if (snapshot.exists()){
+                    val user = User(2)
+                    user.full_name = snapshot.child("name").value.toString()
+                    user.email = snapshot.child("email").value.toString()
+                    user.phone = snapshot.child("phone").value.toString()
+                    viewModel.insertUser(user)
+
+                    ref.removeEventListener(this)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("TAG", "onCancelled:userdata ", error.toException())
+                ref.removeEventListener(this)
+            }
+
+        })
+
+    }
+
+
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw      = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            return connectivityManager.activeNetworkInfo?.isConnected ?: false
+        }
+    }
+
+
+    fun checkVersionAndLoad(){
+        val ref = Firebase.database.reference.child("version").get()
+            .addOnSuccessListener { snapshot->
+                if (snapshot.exists()){
+                    val versionLong:Long = snapshot.child("version").value as Long
+                    Log.d("TAG", "checkVersionAndLoad: version "+versionLong)
+
+
+                    if (viewModel.getVersion().isNotEmpty()){
+                        val localVersion = viewModel.getVersion()[0]
+                        Log.d("TAG", "checkVersionAndLoad: versionlocal "+localVersion)
+                        if (versionLong != localVersion.version){
+                            loadData()
+                            loadUserData1()
+                            loadUserData2()
+                            val version = Version(1, versionLong)
+                            viewModel.insertVersion(version)
+                        }
+                    }
+                    else{
+                        loadData()
+                        loadUserData1()
+                        loadUserData2()
+                        val version = Version(1, versionLong)
+                        viewModel.insertVersion(version)
+                        Log.d("TAG", "checkVersionAndLoad: versionlocal empty")
+                    }
+
+
+
+
+
+
+                }
+            }
+            .addOnFailureListener {
+                Utils.showMessage(this, it.message!!)
+            }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
 
 }

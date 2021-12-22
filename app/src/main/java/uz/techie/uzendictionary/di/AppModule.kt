@@ -18,5 +18,6 @@ object AppModule {
     fun provideDatabase(app:Application):DictionaryDatabase =
         Room.databaseBuilder(app, DictionaryDatabase::class.java, "dictionary2.db")
             .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
             .build()
 }

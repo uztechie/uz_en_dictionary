@@ -36,7 +36,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         customProgressbar = CustomProgressbar(requireContext())
-        customProgressbar.show()
+
         initToolbar()
 
 
@@ -45,18 +45,27 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
         viewLifecycleOwner.lifecycle.coroutineScope.launch {
             viewModel.getUser().collect {
-                loadUser()
                 if (it.isNotEmpty()) {
-                    customProgressbar.dismiss()
-                    val user = it[0]
-                    author_email.text = user.email
-                    author_name.text = user.full_name
-                    author_phone.text = user.phone
+                    it.forEach { user->
+                        if (user.id == 1){
+                            author_email.text = user.email
+                            author_name.text = user.full_name
+                            author_phone.text = user.phone
+                        }
+                        else if (user.id == 2){
+                            developer_email.text = user.email
+                            developer_name.text = user.full_name
+                            developer_phone.text = user.phone
+                        }
+                    }
+
+
                 }
             }
         }
 
         info_switch.setIsNight(SharedData(requireContext()).isDarkMode())
+        changeMode(SharedData(requireContext()).isDarkMode())
 
         info_switch.setListener {
             if (info_switch.isNight) {
@@ -108,20 +117,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
     }
 
-    private fun loadUser() {
-        db.collection("users").document("user2").get()
-            .addOnFailureListener {
-                customProgressbar.dismiss()
-                Utils.showMessage(requireContext(), it.toString())
-            }.addOnSuccessListener { snapshot ->
-                customProgressbar.dismiss()
-                val user: User? = snapshot.toObject(User::class.java)
-                user?.let {
-                    viewModel.insertUser(it)
-                }
-            }
 
-    }
 
 
     fun call(phone: String) {

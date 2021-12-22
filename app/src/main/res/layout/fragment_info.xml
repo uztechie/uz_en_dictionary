@@ -108,7 +108,7 @@
                 android:id="@+id/developer_phone"
                 android:drawableStart="@drawable/ic_baseline_phone_android_24"
                 app:drawableTint="@color/colorOnPrimary"
-                android:text="@string/developer_phone"
+                android:text=""
                 android:textSize="16sp"
                 android:textColor="@color/colorOnPrimary"
                 android:drawablePadding="12dp"
