@@ -19,6 +19,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.dialog.CustomProgressbar
@@ -51,16 +54,39 @@ class MainActivity : AppCompatActivity() {
     lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var customProgressbar: CustomProgressbar
 
+    private lateinit var auth:FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         customProgressbar = CustomProgressbar(this)
-        database = Firebase.database.reference
 
-        checkVersionAndLoad()
+
+
+//        auth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
+
+        auth.signInAnonymously()
+            .addOnSuccessListener {
+                database = Firebase.database.reference
+                checkVersionAndLoad()
+                Log.d("TAG", "onCreate: createUserWithEmailAndPassword success")
+            }
+            .addOnFailureListener {
+                database = Firebase.database.reference
+                checkVersionAndLoad()
+                Log.e("TAG", "onCreate: createUserWithEmailAndPassword fail "+it)
+            }
+        val user = auth.currentUser
+        Log.d("TAG", "onCreate: FirebaseAuth ${user?.uid}")
+
+
+
 
 //        loadData()
 //        loadUserData()
+
+
 
         lifecycle.coroutineScope.launch {
             viewModel.searchWordUz("%%").collect {
@@ -241,6 +267,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
     }
+
+
+
 
 
 }

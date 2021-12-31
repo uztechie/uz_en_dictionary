@@ -15,8 +15,8 @@ android {
         applicationId "uz.techie.uzendictionary"
         minSdk 21
         targetSdk 31
-        versionCode 2
-        versionName '1.0.2'
+        versionCode 3
+        versionName '1.0.3'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +64,8 @@ dependencies {
     implementation 'androidx.paging:paging-runtime-ktx:3.1.0'
 
     implementation 'com.google.firebase:firebase-database-ktx'
+
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
 
 //    //lifesycle
