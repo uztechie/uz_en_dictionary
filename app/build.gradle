@@ -15,8 +15,8 @@ android {
         applicationId "uz.techie.uzendictionary"
         minSdk 21
         targetSdk 31
-        versionCode 3
-        versionName '1.0.3'
+        versionCode 4
+        versionName '1.0.4'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,6 +66,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
 
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    //admob
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
+
 
 
 //    //lifesycle

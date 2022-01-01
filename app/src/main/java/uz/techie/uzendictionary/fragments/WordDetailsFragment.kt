@@ -12,8 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_word_details.*
+import kotlinx.android.synthetic.main.fragment_word_details.search_adView
 import kotlinx.coroutines.flow.collect
 import uz.techie.uzendictionary.MainActivity
 import uz.techie.uzendictionary.R
@@ -33,6 +37,7 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initBannerAd()
 
         arguments?.let {
             word = WordDetailsFragmentArgs.fromBundle(it).word
@@ -165,6 +170,12 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
         tts?.stop()
         tts?.shutdown()
 //        (activity as MainActivity).supportActionBar?.show()
+    }
+
+    private fun initBannerAd(){
+        MobileAds.initialize(requireContext())
+        val adRequest = AdRequest.Builder().build()
+        search_adView.loadAd(adRequest)
     }
 
 

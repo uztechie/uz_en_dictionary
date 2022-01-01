@@ -10,6 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UzEnDictionary">
+
+        <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-5670498136333194~8784957598"/>
+
+
         <activity
             android:screenOrientation="locked"
             android:name=".MainActivity"

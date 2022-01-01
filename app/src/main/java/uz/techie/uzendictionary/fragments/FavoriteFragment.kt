@@ -24,7 +24,11 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.custom_toolbar.*
+import kotlinx.android.synthetic.main.fragment_favorite.search_adView
+import kotlinx.android.synthetic.main.fragment_search.*
 import uz.techie.uzendictionary.R
 import uz.techie.uzendictionary.models.Word
 
@@ -39,6 +43,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         super.onViewCreated(view, savedInstanceState)
 
         initToolbar()
+        initBannerAd()
 
         favoriteAdapter = FavoriteAdapter(object : FavoriteAdapter.WordListener {
             override fun onItemClick(favorite: Favorite) {
@@ -132,5 +137,13 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             findNavController().popBackStack()
         }
     }
+
+
+    private fun initBannerAd(){
+        MobileAds.initialize(requireContext())
+        val adRequest = AdRequest.Builder().build()
+        search_adView.loadAd(adRequest)
+    }
+
 
 }

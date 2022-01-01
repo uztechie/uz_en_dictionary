@@ -13,11 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_info.*
+import kotlinx.android.synthetic.main.fragment_info.search_adView
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.R
@@ -39,7 +43,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
         initToolbar()
 
-
+        initBannerAd()
 
 
 
@@ -151,5 +155,12 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
+
+    private fun initBannerAd(){
+        MobileAds.initialize(requireContext())
+        val adRequest = AdRequest.Builder().build()
+        search_adView.loadAd(adRequest)
+    }
+
 
 }

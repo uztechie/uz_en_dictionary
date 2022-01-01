@@ -18,4 +18,8 @@
     <string name="word_copied">Sentence copied</string>
     <string name="theme">Theme</string>
     <string name="dark_mode">Dark mode</string>
+
+
+    <string name="ad_banner">ca-app-pub-5670498136333194/1334693045</string>
+    <string name="ad_banner_test">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,8 +45,9 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
                     findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToWordDetailsFragment(word))
                 }
             }
-
         })
+
+        initBannerAd()
 
         viewLifecycleOwner.lifecycle.coroutineScope.launch {
             viewModel.searchWordUz("%%").collect {
@@ -163,5 +166,10 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
 
     }
 
+    private fun initBannerAd(){
+        MobileAds.initialize(requireContext())
+        val adRequest = AdRequest.Builder().build()
+        search_adView.loadAd(adRequest)
+    }
 
 }
