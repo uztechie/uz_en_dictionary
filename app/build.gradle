@@ -12,11 +12,11 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "uz.techie.uzendictionary"
+        applicationId "uz.ibroxim.uzendictionary"
         minSdk 21
         targetSdk 31
-        versionCode 4
-        versionName '1.0.4'
+        versionCode 1
+        versionName '1.0.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -117,6 +117,7 @@ dependencies {
     //switch dark/light mode
     implementation 'com.github.vimalcvs:Day-Night-Switch:1.0.3'
 
+    implementation 'com.google.android.play:core-ktx:1.8.1'
 }
 
 kapt {

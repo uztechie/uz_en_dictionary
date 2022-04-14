@@ -43,7 +43,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         super.onViewCreated(view, savedInstanceState)
 
         initToolbar()
-        initBannerAd()
+//        initBannerAd()
 
         favoriteAdapter = FavoriteAdapter(object : FavoriteAdapter.WordListener {
             override fun onItemClick(favorite: Favorite) {

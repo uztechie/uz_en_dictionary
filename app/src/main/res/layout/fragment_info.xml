@@ -173,6 +173,20 @@
         ads:adUnitId="@string/ad_banner">
     </com.google.android.gms.ads.AdView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:gravity="center"
+            android:id="@+id/info_version"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
 
 
 </LinearLayout>

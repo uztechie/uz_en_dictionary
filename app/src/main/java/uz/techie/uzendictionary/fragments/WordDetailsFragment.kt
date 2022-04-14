@@ -37,7 +37,7 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initBannerAd()
+//        initBannerAd()
 
         arguments?.let {
             word = WordDetailsFragmentArgs.fromBundle(it).word

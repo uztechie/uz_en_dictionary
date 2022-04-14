@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_info.search_adView
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import uz.techie.uzendictionary.BuildConfig
 import uz.techie.uzendictionary.R
 import uz.techie.uzendictionary.dialog.CustomProgressbar
 import uz.techie.uzendictionary.models.User
@@ -43,8 +44,9 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
         initToolbar()
 
-        initBannerAd()
+//        initBannerAd()
 
+        info_version.text = "Version: ${BuildConfig.VERSION_NAME}"
 
 
         viewLifecycleOwner.lifecycle.coroutineScope.launch {

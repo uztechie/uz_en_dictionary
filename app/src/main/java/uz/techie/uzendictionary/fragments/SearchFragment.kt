@@ -47,7 +47,7 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
             }
         })
 
-        initBannerAd()
+//        initBannerAd()
 
         viewLifecycleOwner.lifecycle.coroutineScope.launch {
             viewModel.searchWordUz("%%").collect {

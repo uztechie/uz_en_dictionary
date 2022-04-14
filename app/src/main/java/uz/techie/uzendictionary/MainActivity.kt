@@ -1,6 +1,8 @@
 package uz.techie.uzendictionary
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -19,6 +21,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -43,6 +55,12 @@ import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val UPDATE_CODE = 123
+    private val TAG = "MainActivity"
+
+    private val appUpdateManager:AppUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
+    private lateinit var  installstateListener:InstallStateUpdatedListener
+
     private val db = Firebase.firestore
     lateinit var database:DatabaseReference
     private var listener:ValueEventListener? = null
@@ -60,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         customProgressbar = CustomProgressbar(this)
+
 
 
 
@@ -115,6 +134,60 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun checkAppUpdate(){
+
+        appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
+                try {
+                    appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.FLEXIBLE, this, UPDATE_CODE)
+
+                }catch (t:Throwable){
+                    Log.e("TAG", "checkAppUpdate: error ",t)
+                }
+            }
+        }.addOnFailureListener {
+            Log.e("TAG", "checkAppUpdate: error ",it)
+        }
+
+
+        installstateListener = object :InstallStateUpdatedListener{
+            override fun onStateUpdate(state: InstallState) {
+                if (state.installStatus() == InstallStatus.DOWNLOADED){
+                    Log.d("TAG", "onStateUpdate: DOWNLOADED")
+                    val snackbar = Snackbar.make(findViewById(android.R.id.content), "Update downloaded", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Install"){updateApp()}
+
+//                snackbar.setTextColor(Color.BLACK)
+//                snackbar.setBackgroundTint(Color.WHITE)
+                    snackbar.show()
+                }
+                else if (state.installStatus() == InstallStatus.INSTALLED){
+                    appUpdateManager.unregisterListener(installstateListener)
+                    Log.d("TAG", "onStateUpdate: Installed")
+                }
+                else{
+                    Log.i("TAG", "InstallStateUpdatedListener: state: " + state.installStatus())
+                }
+            }
+
+        }
+
+        appUpdateManager.registerListener (installstateListener)
+
+
+
+
+
+    }
+
+    private fun updateApp() {
+        appUpdateManager.completeUpdate().addOnSuccessListener {
+            Log.d(TAG, "updateApp:  success")
+        }
+            .addOnFailureListener {
+                Log.e(TAG, "updateApp: failed ", it)
+            }
+    }
 
     private fun loadData() {
         customProgressbar.show()
@@ -262,12 +335,35 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkAppUpdate()
+
     }
 
     override fun onStop() {
         super.onStop()
+        Log.d(TAG, "aaaa onStop: ")
+        appUpdateManager.unregisterListener(installstateListener)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "aaaa onDestroy: ")
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UPDATE_CODE){
+            if (resultCode != RESULT_OK){
+                Log.d("TAG", "onActivityResult: "+data.toString())
+            }
+        }
+    }
 
 
 
