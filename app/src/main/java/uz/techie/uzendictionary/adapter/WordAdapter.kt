@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.adapter_word.view.*
 import uz.techie.uzendictionary.R
+import uz.techie.uzendictionary.databinding.AdapterFavoriteBinding
+import uz.techie.uzendictionary.databinding.AdapterWordBinding
 import uz.techie.uzendictionary.models.Word
 import uz.techie.uzendictionary.utils.Constants
 
@@ -28,21 +29,21 @@ class WordAdapter(private val listener: WordListener):RecyclerView.Adapter<WordA
     val differ = AsyncListDiffer(this, diffCallBack)
 
 
-    inner class WordViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){}
+    inner class WordViewHolder(val binding: AdapterWordBinding):RecyclerView.ViewHolder(binding.root){}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_word, parent, false)
-        return WordViewHolder(view)
+        val binding = AdapterWordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return WordViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val word = differ.currentList[position]
 
         if (primaryLang == Constants.LANG_UZBEK){
-            holder.itemView.adapter_title.text = word.word_uz
+            holder.binding.adapterTitle.text = word.word_uz
         }
         else{
-            holder.itemView.adapter_title.text = word.word_en
+            holder.binding.adapterTitle.text = word.word_en
         }
 
         holder.itemView.setOnClickListener {

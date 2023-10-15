@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,14 +20,11 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_toolbar.*
-import kotlinx.android.synthetic.main.fragment_info.*
-import kotlinx.android.synthetic.main.fragment_info.search_adView
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.BuildConfig
 import uz.techie.uzendictionary.R
+import uz.techie.uzendictionary.databinding.FragmentInfoBinding
 import uz.techie.uzendictionary.dialog.CustomProgressbar
 import uz.techie.uzendictionary.models.User
 import uz.techie.uzendictionary.utils.SharedData
@@ -33,10 +32,20 @@ import uz.techie.uzendictionary.utils.Utils
 import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 
 @AndroidEntryPoint
-class InfoFragment : Fragment(R.layout.fragment_info) {
+class InfoFragment : Fragment() {
     private val db = Firebase.firestore
     private lateinit var customProgressbar: CustomProgressbar
     private val viewModel: DictionaryViewModel by viewModels()
+    private lateinit var binding:FragmentInfoBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentInfoBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,7 +55,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
 //        initBannerAd()
 
-        info_version.text = "Version: ${BuildConfig.VERSION_NAME}"
+        binding.infoVersion.text = "Version: ${BuildConfig.VERSION_NAME}"
 
 
         viewLifecycleOwner.lifecycle.coroutineScope.launch {
@@ -54,14 +63,14 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
                 if (it.isNotEmpty()) {
                     it.forEach { user->
                         if (user.id == 1){
-                            author_email.text = user.email
-                            author_name.text = user.full_name
-                            author_phone.text = user.phone
+                            binding.authorEmail.text = user.email
+                            binding.authorName.text = user.full_name
+                            binding.authorPhone.text = user.phone
                         }
                         else if (user.id == 2){
-                            developer_email.text = user.email
-                            developer_name.text = user.full_name
-                            developer_phone.text = user.phone
+                            binding.developerEmail.text = user.email
+                            binding.developerName.text = user.full_name
+                            binding.developerPhone.text = user.phone
                         }
                     }
 
@@ -70,11 +79,11 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
             }
         }
 
-        info_switch.setIsNight(SharedData(requireContext()).isDarkMode())
+        binding.infoSwitch.setIsNight(SharedData(requireContext()).isDarkMode())
         changeMode(SharedData(requireContext()).isDarkMode())
 
-        info_switch.setListener {
-            if (info_switch.isNight) {
+        binding.infoSwitch.setListener {
+            if (binding.infoSwitch.isNight) {
                 changeMode(true)
                 SharedData(requireContext()).setAppMode(true)
             } else {
@@ -83,7 +92,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
             }
 
             Log.d("d", "onViewCreated: switch " + it)
-            Log.d("TAG", "onViewCreated: isNight " + info_switch.isNight)
+            Log.d("TAG", "onViewCreated: isNight " + binding.infoSwitch.isNight)
         }
 
 
@@ -92,30 +101,30 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
 
 
-        author_email.setOnClickListener {
-            val email = author_email.text.toString()
+        binding.authorEmail.setOnClickListener {
+            val email = binding.authorEmail.text.toString()
             if (email.isNotEmpty()) {
                 copyEmail(email)
             }
         }
 
 
-        developer_email.setOnClickListener {
-            val email = developer_email.text.toString()
+        binding.developerEmail.setOnClickListener {
+            val email = binding.developerEmail.text.toString()
             if (email.isNotEmpty()) {
                 copyEmail(email)
             }
         }
 
-        author_phone.setOnClickListener {
-            val phone = author_phone.text.toString()
+        binding.authorPhone.setOnClickListener {
+            val phone = binding.authorPhone.text.toString()
             if (phone.isNotEmpty()) {
                 call(phone)
             }
         }
 
-        developer_phone.setOnClickListener {
-            val phone = developer_phone.text.toString()
+        binding.developerPhone.setOnClickListener {
+            val phone = binding.developerPhone.text.toString()
             if (phone.isNotEmpty()) {
                 call(phone)
             }
@@ -144,8 +153,8 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
 
 
     fun initToolbar() {
-        toolbar_title.text = getString(R.string.info)
-        toolbar_btn_back.setOnClickListener {
+        binding.header.toolbarTitle.text = getString(R.string.info)
+        binding.header.toolbarBtnBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -161,7 +170,7 @@ class InfoFragment : Fragment(R.layout.fragment_info) {
     private fun initBannerAd(){
         MobileAds.initialize(requireContext())
         val adRequest = AdRequest.Builder().build()
-        search_adView.loadAd(adRequest)
+        binding.searchAdView.loadAd(adRequest)
     }
 
 

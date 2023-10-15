@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,9 +17,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.fragment_word_details.*
-import kotlinx.android.synthetic.main.fragment_word_details.search_adView
+import uz.techie.uzendictionary.databinding.FragmentWordDetailsBinding
+
 import kotlinx.coroutines.flow.collect
 import uz.techie.uzendictionary.MainActivity
 import uz.techie.uzendictionary.R
@@ -28,11 +29,21 @@ import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 import java.util.*
 
 @AndroidEntryPoint
-class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
+class WordDetailsFragment : Fragment() {
     private val viewModel: DictionaryViewModel by viewModels()
+    private lateinit var binding:FragmentWordDetailsBinding
     private var word: Word? = null
     private var tts: TextToSpeech? = null
     private var isFavorite = false
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentWordDetailsBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,9 +53,9 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
         arguments?.let {
             word = WordDetailsFragmentArgs.fromBundle(it).word
 
-            details_word_uz.text = word?.word_uz
-            details_word_en.text = word?.word_en
-            details_word_example.text = word?.example
+            binding.detailsWordUz.text = word?.word_uz
+            binding.detailsWordEn.text = word?.word_en
+            binding.detailsWordExample.text = word?.example
 
         }
 
@@ -61,7 +72,7 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
 
         })
 
-        details_word_en_tts.setOnClickListener {
+        binding.detailsWordEnTts.setOnClickListener {
             word!!.word_en?.let {
                 var text = it.replace("/", ",")
                 text = text.replace("=", " ")
@@ -72,7 +83,7 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
 
         }
 
-        details_example_tts.setOnClickListener {
+        binding.detailsExampleTts.setOnClickListener {
             word!!.example?.let {
                 var text = it.replace("/", ",")
                 text = text.replace("=", " ")
@@ -83,11 +94,11 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
 
         }
 
-        details_btn_back.setOnClickListener {
+        binding.detailsBtnBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        details_btn_favorite.setOnClickListener {
+        binding.detailsBtnFavorite.setOnClickListener {
             word?.let { nonNullWord->
 
                 val favorite = Favorite(
@@ -106,10 +117,10 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
             }
         }
 
-        details_btn_copy.setOnClickListener {
+        binding.detailsBtnCopy.setOnClickListener {
             word?.let { it1 -> copyWord(it1) }
         }
-        details_btn_share.setOnClickListener {
+        binding.detailsBtnShare.setOnClickListener {
             word?.let {it1-> shareSentence(it1) }
         }
 
@@ -144,13 +155,13 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
                 viewModel.getFavorite(it.id!!).collect {
                     if (it.isEmpty()){
                         isFavorite = false
-                        details_btn_favorite
+                        binding.detailsBtnFavorite
                             .setImageDrawable(ContextCompat
                                 .getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24))
                     }
                     else{
                         isFavorite = true
-                        details_btn_favorite
+                        binding.detailsBtnFavorite
                             .setImageDrawable(ContextCompat
                                 .getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24))
                     }
@@ -175,7 +186,7 @@ class WordDetailsFragment : Fragment(R.layout.fragment_word_details) {
     private fun initBannerAd(){
         MobileAds.initialize(requireContext())
         val adRequest = AdRequest.Builder().build()
-        search_adView.loadAd(adRequest)
+        binding.searchAdView.loadAd(adRequest)
     }
 
 

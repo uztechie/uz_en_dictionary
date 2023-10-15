@@ -1,14 +1,16 @@
 package uz.techie.uzendictionary.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_favorite.*
+
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.adapter.FavoriteAdapter
@@ -26,18 +28,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import kotlinx.android.synthetic.main.custom_toolbar.*
-import kotlinx.android.synthetic.main.fragment_favorite.search_adView
-import kotlinx.android.synthetic.main.fragment_search.*
 import uz.techie.uzendictionary.R
+import uz.techie.uzendictionary.databinding.FragmentFavoriteBinding
 import uz.techie.uzendictionary.models.Word
 
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
+class FavoriteFragment : Fragment() {
+    private lateinit var binding:FragmentFavoriteBinding
     private lateinit var favoriteAdapter: FavoriteAdapter
     private val viewModel: DictionaryViewModel by viewModels()
     private var primaryLang = Constants.LANG_UZBEK
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,7 +71,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             }
         })
 
-        favorite_recyclerview.apply {
+        binding.favoriteRecyclerview.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = favoriteAdapter
@@ -75,7 +85,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
 
 
-        favorite_lang_changer_btn.setOnClickListener {
+        binding.favoriteLangChangerBtn.setOnClickListener {
             animateView(it)
             if (primaryLang == Constants.LANG_UZBEK) {
                 primaryLang = Constants.LANG_ENGLISH
@@ -132,8 +142,8 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
 
     fun initToolbar(){
-        toolbar_title.text = getString(R.string.favorite)
-        toolbar_btn_back.setOnClickListener {
+        binding.header.toolbarTitle.text = getString(R.string.favorite)
+        binding.header.toolbarBtnBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -142,7 +152,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun initBannerAd(){
         MobileAds.initialize(requireContext())
         val adRequest = AdRequest.Builder().build()
-        search_adView.loadAd(adRequest)
+        binding.searchAdView.loadAd(adRequest)
     }
 
 

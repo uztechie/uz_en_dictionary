@@ -3,7 +3,9 @@ package uz.techie.uzendictionary.fragments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
@@ -14,13 +16,14 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_search.*
+
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uz.techie.uzendictionary.MainActivity
 import uz.techie.uzendictionary.R
 import uz.techie.uzendictionary.adapter.WordAdapter
+import uz.techie.uzendictionary.databinding.FragmentSearchBinding
 import uz.techie.uzendictionary.dialog.CustomProgressbar
 import uz.techie.uzendictionary.models.Word
 import uz.techie.uzendictionary.utils.Constants
@@ -28,13 +31,23 @@ import uz.techie.uzendictionary.utils.Utils
 import uz.techie.uzendictionaryadmin.data.DictionaryViewModel
 
 @AndroidEntryPoint
-class SearchFragment:Fragment(R.layout.fragment_search) {
+class SearchFragment:Fragment() {
+    private lateinit var binding:FragmentSearchBinding
     private val viewModel:DictionaryViewModel by viewModels()
     private val db = Firebase.firestore
     private lateinit var customProgressbar: CustomProgressbar
     private lateinit var wordAdapter: WordAdapter
 
     private var primaryLang = Constants.LANG_UZBEK
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,7 +70,7 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
             }
         }
 
-        search_recyclerview.apply {
+        binding.searchRecyclerview.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = wordAdapter
@@ -65,19 +78,19 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
 
 
 
-        search_et.addTextChangedListener(object : TextWatcher {
+        binding.searchEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0.toString().isNotEmpty()){
-                    search_clear_iv.visibility = View.VISIBLE
+                    binding.searchClearIv.visibility = View.VISIBLE
                     searchWords(p0.toString())
                 }
                 else{
                     wordAdapter.differ.submitList(emptyList())
-                    search_clear_iv.visibility = View.INVISIBLE
+                    binding.searchClearIv.visibility = View.INVISIBLE
                 }
             }
 
@@ -90,22 +103,22 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
 
         })
 
-        search_clear_iv.setOnClickListener {
-            search_et.text = null
+        binding.searchClearIv.setOnClickListener {
+            binding.searchEt.text = null
         }
 
-        search_changer_iv.setOnClickListener {
+        binding.searchChangerIv.setOnClickListener {
             FavoriteFragment().animateView(it)
 
             if (primaryLang == Constants.LANG_ENGLISH){
-                search_lang1.text = getString(R.string.uzbek)
-                search_lang2.text = getString(R.string.english)
+                binding.searchLang1.text = getString(R.string.uzbek)
+                binding.searchLang2.text = getString(R.string.english)
                 primaryLang = Constants.LANG_UZBEK
                 wordAdapter.changeLang(primaryLang)
             }
             else{
-                search_lang1.text = getString(R.string.english)
-                search_lang2.text = getString(R.string.uzbek)
+                binding.searchLang1.text = getString(R.string.english)
+                binding.searchLang2.text = getString(R.string.uzbek)
                 primaryLang = Constants.LANG_ENGLISH
                 wordAdapter.changeLang(primaryLang)
             }
@@ -146,12 +159,12 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
     }
 
     private fun showInfoText() {
-        search_info.text = getString(R.string.not_found)
-        search_info.visibility = View.VISIBLE
+        binding.searchInfo.text = getString(R.string.not_found)
+        binding.searchInfo.visibility = View.VISIBLE
     }
 
     private fun hideInfoText() {
-        search_info.visibility = View.GONE
+        binding.searchInfo.visibility = View.GONE
     }
 
 
@@ -169,7 +182,7 @@ class SearchFragment:Fragment(R.layout.fragment_search) {
     private fun initBannerAd(){
         MobileAds.initialize(requireContext())
         val adRequest = AdRequest.Builder().build()
-        search_adView.loadAd(adRequest)
+        binding.searchAdView.loadAd(adRequest)
     }
 
 }
